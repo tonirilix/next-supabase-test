@@ -1,10 +1,16 @@
 "use client";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  type Session,
+  createClientComponentClient,
+} from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { env } from "@/env.mjs";
 
-export function AuthButton() {
+type AuthButtonClientProps = {
+  session: Session | null;
+};
+export function AuthButtonClient({ session }: AuthButtonClientProps) {
   const supabase = createClientComponentClient();
   const router = useRouter();
 
@@ -30,12 +36,12 @@ export function AuthButton() {
     router.refresh();
   };
 
-  return (
+  return session ? (
+    <button onClick={handleSignOut}>Logout</button>
+  ) : (
     <>
       <button onClick={handleSignIn}>Login with Github</button> <br />
       <button onClick={handleSignInEmail}>Login email</button>
-      <br />
-      <button onClick={handleSignOut}>Logout</button>
     </>
   );
 }
