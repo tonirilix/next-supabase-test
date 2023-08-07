@@ -14,12 +14,14 @@ export default async function Home() {
     redirect("/login");
   }
 
-  const { data: tweets } = await supabase.from("tweets").select();
+  const { data: tweets, error } = await supabase
+    .from("tweets")
+    .select("*, profiles(*)");
 
   return (
     <>
       <AuthButtonServer />
-      <pre>{JSON.stringify(tweets, null, 2)}</pre>
+      <pre>{JSON.stringify(error ? error : tweets, null, 2)}</pre>
     </>
   );
 }
