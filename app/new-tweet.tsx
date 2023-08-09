@@ -2,6 +2,8 @@ import { User, createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Image from "next/image";
 
+export const dynamic = "force-dynamic";
+
 type NewTweetProps = {
   user: User;
 };
