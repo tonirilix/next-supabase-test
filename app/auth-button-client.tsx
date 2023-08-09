@@ -6,6 +6,7 @@ import {
 } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { env } from "@/env.mjs";
+import { LoginButton } from "./login-button";
 
 type AuthButtonClientProps = {
   session: Session | null;
@@ -19,29 +20,13 @@ export function AuthButtonClient({ session }: AuthButtonClientProps) {
     router.refresh();
   };
 
-  const handleSignIn = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "github",
-      options: {
-        redirectTo: "http://localhost:3000/auth/callback",
-      },
-    });
-  };
-
-  const handleSignInEmail = async () => {
-    await supabase.auth.signInWithPassword({
-      email: env.NEXT_PUBLIC_TEST_USER,
-      password: env.NEXT_PUBLIC_TEST_PASSWORD,
-    });
-    router.refresh();
-  };
-
   return session ? (
-    <button onClick={handleSignOut}>Logout</button>
+    <button className="text-xs text-gray-400" onClick={handleSignOut}>
+      Logout
+    </button>
   ) : (
-    <>
-      <button onClick={handleSignIn}>Login with Github</button> <br />
-      <button onClick={handleSignInEmail}>Login email</button>
-    </>
+    <div className="flex flex-1 justify-center items-center gap-2">
+      <LoginButton />
+    </div>
   );
 }
