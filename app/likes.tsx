@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 
 type LikesProps = {
   tweet: any;
+  addOptimisticTweet: (action: any) => void;
 };
-export function Likes({ tweet }: LikesProps) {
+export function Likes({ tweet, addOptimisticTweet }: LikesProps) {
   const router = useRouter();
   const handleLikes = async () => {
     const supabase = createClientComponentClient<SupabaseDB>();
@@ -15,11 +16,21 @@ export function Likes({ tweet }: LikesProps) {
     } = await supabase.auth.getUser();
     if (user) {
       if (tweet.user_has_liked_tweet) {
+        addOptimisticTweet({
+          ...tweet,
+          likes: tweet.likes - 1,
+          user_has_liked_tweet: !tweet.user_has_liked_tweet,
+        });
         await supabase
           .from("likes")
           .delete()
           .match({ user_id: user.id, tweet_id: tweet.id });
       } else {
+        addOptimisticTweet({
+          ...tweet,
+          likes: tweet.likes + 1,
+          user_has_liked_tweet: !tweet.user_has_liked_tweet,
+        });
         await supabase
           .from("likes")
           .insert({ user_id: user.id, tweet_id: tweet.id });
